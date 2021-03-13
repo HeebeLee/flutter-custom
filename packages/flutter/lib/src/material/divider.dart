@@ -96,12 +96,12 @@ class Divider extends StatelessWidget {
     this.indent,
     this.endIndent,
     this.color,
-  }) : assert(height == null || height >= 0.0),
-       assert(thickness == null || thickness >= 0.0),
-       assert(indent == null || indent >= 0.0),
-       assert(endIndent == null || endIndent >= 0.0),
-       super(key: key);
-
+    this.padding,
+  })  : assert(height == null || height >= 0.0),
+        assert(thickness == null || thickness >= 0.0),
+        assert(indent == null || indent >= 0.0),
+        assert(endIndent == null || endIndent >= 0.0),
+        super(key: key);
 
   /// The divider's height extent.
   ///
@@ -148,6 +148,9 @@ class Divider extends StatelessWidget {
   /// {@end-tool}
   final Color? color;
 
+  /// 上下左右的间隔
+  final EdgeInsetsGeometry? padding;
+
   /// Computes the [BorderSide] that represents a divider.
   ///
   /// If [color] is null, then [DividerThemeData.color] is used. If that is also
@@ -177,12 +180,9 @@ class Divider extends StatelessWidget {
   /// )
   /// ```
   /// {@end-tool}
-  static BorderSide createBorderSide(BuildContext? context, { Color? color, double? width }) {
-    final Color? effectiveColor = color
-        ?? (context != null ? (DividerTheme.of(context).color ?? Theme.of(context).dividerColor) : null);
-    final double effectiveWidth =  width
-        ?? (context != null ? DividerTheme.of(context).thickness : null)
-        ?? 0.0;
+  static BorderSide createBorderSide(BuildContext? context, {Color? color, double? width}) {
+    final Color? effectiveColor = color ?? (context != null ? (DividerTheme.of(context).color ?? Theme.of(context).dividerColor) : null);
+    final double effectiveWidth = width ?? (context != null ? DividerTheme.of(context).thickness : null) ?? 0.0;
 
     // Prevent assertion since it is possible that context is null and no color
     // is specified.
@@ -205,7 +205,7 @@ class Divider extends StatelessWidget {
     final double indent = this.indent ?? dividerTheme.indent ?? 0.0;
     final double endIndent = this.endIndent ?? dividerTheme.endIndent ?? 0.0;
 
-    return SizedBox(
+    Widget result = SizedBox(
       height: height,
       child: Center(
         child: Container(
@@ -219,6 +219,16 @@ class Divider extends StatelessWidget {
         ),
       ),
     );
+
+    // 判断是否需要增加间隙
+    if (padding != null && padding != EdgeInsets.zero) {
+      result = Padding(
+        padding: padding ?? EdgeInsets.zero,
+        child: result,
+      );
+    }
+
+    return result;
   }
 }
 
@@ -247,11 +257,11 @@ class VerticalDivider extends StatelessWidget {
     this.indent,
     this.endIndent,
     this.color,
-  }) : assert(width == null || width >= 0.0),
-       assert(thickness == null || thickness >= 0.0),
-       assert(indent == null || indent >= 0.0),
-       assert(endIndent == null || endIndent >= 0.0),
-       super(key: key);
+  })  : assert(width == null || width >= 0.0),
+        assert(thickness == null || thickness >= 0.0),
+        assert(indent == null || indent >= 0.0),
+        assert(endIndent == null || endIndent >= 0.0),
+        super(key: key);
 
   /// The divider's width.
   ///

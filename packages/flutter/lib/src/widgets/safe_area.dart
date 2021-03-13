@@ -44,14 +44,26 @@ class SafeArea extends StatelessWidget {
     this.top = true,
     this.right = true,
     this.bottom = true,
+    this.supplementEdgeInsets = EdgeInsets.zero,
     this.minimum = EdgeInsets.zero,
     this.maintainBottomViewPadding = false,
     required this.child,
-  }) : assert(left != null),
-       assert(top != null),
-       assert(right != null),
-       assert(bottom != null),
-       super(key: key);
+  })   : assert(left != null),
+        assert(top != null),
+        assert(right != null),
+        assert(bottom != null),
+        super(key: key);
+
+  /// 只有左右为true的水平安全区域
+  const SafeArea.horizontal(
+      {required this.child,
+      this.supplementEdgeInsets = const EdgeInsets.symmetric(horizontal: 16),
+      this.maintainBottomViewPadding = false,
+      this.minimum = EdgeInsets.zero})
+      : left = true,
+        top = false,
+        right = true,
+        bottom = false;
 
   /// Whether to avoid system intrusions on the left.
   final bool left;
@@ -65,6 +77,9 @@ class SafeArea extends StatelessWidget {
 
   /// Whether to avoid system intrusions on the bottom side of the screen.
   final bool bottom;
+
+  /// 补充的边界
+  final EdgeInsets supplementEdgeInsets;
 
   /// This minimum padding to apply.
   ///
@@ -103,10 +118,10 @@ class SafeArea extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.only(
-        left: math.max(left ? padding.left : 0.0, minimum.left),
-        top: math.max(top ? padding.top : 0.0, minimum.top),
-        right: math.max(right ? padding.right : 0.0, minimum.right),
-        bottom: math.max(bottom ? padding.bottom : 0.0, minimum.bottom),
+        left: math.max((left ? padding.left : 0.0) + supplementEdgeInsets.left, minimum.left),
+        top: math.max((top ? padding.top : 0.0) + supplementEdgeInsets.top, minimum.top),
+        right: math.max((right ? padding.right : 0.0) + supplementEdgeInsets.right, minimum.right),
+        bottom: math.max((bottom ? padding.bottom : 0.0) + supplementEdgeInsets.bottom, minimum.bottom),
       ),
       child: MediaQuery.removePadding(
         context: context,
@@ -159,13 +174,22 @@ class SliverSafeArea extends StatelessWidget {
     this.top = true,
     this.right = true,
     this.bottom = true,
+    this.supplementEdgeInsets = EdgeInsets.zero,
     this.minimum = EdgeInsets.zero,
     required this.sliver,
-  }) : assert(left != null),
-       assert(top != null),
-       assert(right != null),
-       assert(bottom != null),
-       super(key: key);
+  })   : assert(left != null),
+        assert(top != null),
+        assert(right != null),
+        assert(bottom != null),
+        super(key: key);
+
+  /// 只有左右为true的水平安全区域
+  const SliverSafeArea.horizontal(
+      {required this.sliver, this.supplementEdgeInsets = const EdgeInsets.symmetric(horizontal: 16), this.minimum = EdgeInsets.zero})
+      : left = true,
+        top = false,
+        right = true,
+        bottom = false;
 
   /// Whether to avoid system intrusions on the left.
   final bool left;
@@ -179,6 +203,9 @@ class SliverSafeArea extends StatelessWidget {
 
   /// Whether to avoid system intrusions on the bottom side of the screen.
   final bool bottom;
+
+  /// 补充的边界
+  final EdgeInsets supplementEdgeInsets;
 
   /// This minimum padding to apply.
   ///
@@ -197,10 +224,10 @@ class SliverSafeArea extends StatelessWidget {
     final EdgeInsets padding = MediaQuery.of(context).padding;
     return SliverPadding(
       padding: EdgeInsets.only(
-        left: math.max(left ? padding.left : 0.0, minimum.left),
-        top: math.max(top ? padding.top : 0.0, minimum.top),
-        right: math.max(right ? padding.right : 0.0, minimum.right),
-        bottom: math.max(bottom ? padding.bottom : 0.0, minimum.bottom),
+        left: math.max((left ? padding.left : 0.0) + supplementEdgeInsets.left, minimum.left),
+        top: math.max((top ? padding.top : 0.0) + supplementEdgeInsets.top, minimum.top),
+        right: math.max((right ? padding.right : 0.0) + supplementEdgeInsets.right, minimum.right),
+        bottom: math.max((bottom ? padding.bottom : 0.0) + supplementEdgeInsets.bottom, minimum.bottom),
       ),
       sliver: MediaQuery.removePadding(
         context: context,

@@ -143,7 +143,7 @@ class IconButton extends StatelessWidget {
     this.visualDensity,
     this.padding = const EdgeInsets.all(8.0),
     this.alignment = Alignment.center,
-    this.splashRadius,
+    this.splashRadius = 24.0,
     required this.icon,
     this.color,
     this.focusColor,
@@ -152,19 +152,20 @@ class IconButton extends StatelessWidget {
     this.splashColor,
     this.disabledColor,
     required this.onPressed,
+    this.enabled = true,
     this.mouseCursor = SystemMouseCursors.click,
     this.focusNode,
     this.autofocus = false,
     this.tooltip,
     this.enableFeedback = true,
     this.constraints,
-  }) : assert(iconSize != null),
-       assert(padding != null),
-       assert(alignment != null),
-       assert(splashRadius == null || splashRadius > 0),
-       assert(autofocus != null),
-       assert(icon != null),
-       super(key: key);
+  })  : assert(iconSize != null),
+        assert(padding != null),
+        assert(alignment != null),
+        assert(splashRadius == null || splashRadius > 0),
+        assert(autofocus != null),
+        assert(icon != null),
+        super(key: key);
 
   /// The size of the icon inside the button.
   ///
@@ -276,6 +277,11 @@ class IconButton extends StatelessWidget {
   /// If this is set to null, the button will be disabled.
   final VoidCallback? onPressed;
 
+  /// 是否可用
+  ///
+  /// 代替[onPressed != null || onLongPress != null]的方法
+  final bool enabled;
+
   /// {@macro flutter.material.RawMaterialButton.mouseCursor}
   ///
   /// Defaults to [SystemMouseCursors.click].
@@ -327,18 +333,20 @@ class IconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterial(context));
     final ThemeData theme = Theme.of(context);
+    final bool _isEnabled = enabled && onPressed != null;
     Color? currentColor;
-    if (onPressed != null)
+    if (_isEnabled)
       currentColor = color;
     else
       currentColor = disabledColor ?? theme.disabledColor;
 
     final VisualDensity effectiveVisualDensity = visualDensity ?? theme.visualDensity;
 
-    final BoxConstraints unadjustedConstraints = constraints ?? const BoxConstraints(
-      minWidth: _kMinButtonSize,
-      minHeight: _kMinButtonSize,
-    );
+    final BoxConstraints unadjustedConstraints = constraints ??
+        const BoxConstraints(
+          minWidth: _kMinButtonSize,
+          minHeight: _kMinButtonSize,
+        );
     final BoxConstraints adjustedConstraints = effectiveVisualDensity.effectiveConstraints(unadjustedConstraints);
 
     Widget result = ConstrainedBox(
@@ -371,11 +379,11 @@ class IconButton extends StatelessWidget {
 
     return Semantics(
       button: true,
-      enabled: onPressed != null,
+      enabled: _isEnabled,
       child: InkResponse(
         focusNode: focusNode,
         autofocus: autofocus,
-        canRequestFocus: onPressed != null,
+        canRequestFocus: _isEnabled,
         onTap: onPressed,
         mouseCursor: mouseCursor,
         enableFeedback: enableFeedback,
@@ -384,11 +392,12 @@ class IconButton extends StatelessWidget {
         hoverColor: hoverColor ?? theme.hoverColor,
         highlightColor: highlightColor ?? theme.highlightColor,
         splashColor: splashColor ?? theme.splashColor,
-        radius: splashRadius ?? math.max(
-          Material.defaultSplashRadius,
-          (iconSize + math.min(padding.horizontal, padding.vertical)) * 0.7,
-          // x 0.5 for diameter -> radius and + 40% overflow derived from other Material apps.
-        ),
+        radius: splashRadius ??
+            math.max(
+              Material.defaultSplashRadius,
+              (iconSize + math.min(padding.horizontal, padding.vertical)) * 0.7,
+              // x 0.5 for diameter -> radius and + 40% overflow derived from other Material apps.
+            ),
       ),
     );
   }
