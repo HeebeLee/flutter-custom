@@ -63,9 +63,9 @@ class FlutterFeatureFlags implements FeatureFlags {
     @required FlutterVersion flutterVersion,
     @required Config config,
     @required Platform platform,
-  }) : _flutterVersion = flutterVersion,
-       _config = config,
-       _platform = platform;
+  })  : _flutterVersion = flutterVersion,
+        _config = config,
+        _platform = platform;
 
   final FlutterVersion _flutterVersion;
   final Config _config;
@@ -162,8 +162,7 @@ const Feature flutterMacOSDesktopFeature = Feature(
   name: 'beta-quality support for desktop on macOS',
   configSetting: 'enable-macos-desktop',
   environmentOverride: 'FLUTTER_MACOS',
-  extraHelpText: flutterNext ?
-      'Newer beta versions are available on the beta channel.' : null,
+  extraHelpText: flutterNext ? 'Newer beta versions are available on the beta channel.' : null,
   master: FeatureChannelSetting(
     available: true,
     enabledByDefault: false,
@@ -178,7 +177,7 @@ const Feature flutterMacOSDesktopFeature = Feature(
   ),
   stable: FeatureChannelSetting(
     available: flutterNext,
-    enabledByDefault: false,
+    enabledByDefault: true,
   ),
 );
 
@@ -187,8 +186,7 @@ const Feature flutterLinuxDesktopFeature = Feature(
   name: 'beta-quality support for desktop on Linux',
   configSetting: 'enable-linux-desktop',
   environmentOverride: 'FLUTTER_LINUX',
-  extraHelpText: flutterNext ?
-      'Newer beta versions are available on the beta channel.' : null,
+  extraHelpText: flutterNext ? 'Newer beta versions are available on the beta channel.' : null,
   master: FeatureChannelSetting(
     available: true,
     enabledByDefault: false,
@@ -212,8 +210,7 @@ const Feature flutterWindowsDesktopFeature = Feature(
   name: 'beta-quality support for desktop on Windows',
   configSetting: 'enable-windows-desktop',
   environmentOverride: 'FLUTTER_WINDOWS',
-  extraHelpText: flutterNext ?
-      'Newer beta versions are available on the beta channel.' : null,
+  extraHelpText: flutterNext ? 'Newer beta versions are available on the beta channel.' : null,
   master: FeatureChannelSetting(
     available: true,
     enabledByDefault: false,
@@ -228,7 +225,7 @@ const Feature flutterWindowsDesktopFeature = Feature(
   ),
   stable: FeatureChannelSetting(
     available: flutterNext,
-    enabledByDefault: false,
+    enabledByDefault: true,
   ),
 );
 
@@ -253,7 +250,6 @@ const Feature flutterAndroidFeature = Feature(
     enabledByDefault: true,
   ),
 );
-
 
 /// The [Feature] for iOS devices.
 const Feature flutterIOSFeature = Feature(
@@ -407,8 +403,7 @@ class Feature {
     } else if (channels.length == 2) {
       buffer.write('the ${channels.join(' and ')} channels.');
     } else {
-      final String prefix = (channels.toList()
-        ..removeLast()).join(', ');
+      final String prefix = (channels.toList()..removeLast()).join(', ');
       buffer.write('the $prefix, and ${channels.last} channels.');
     }
     if (extraHelpText != null) {
